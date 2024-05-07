@@ -42,17 +42,50 @@ export default function Home() {
       setDrawnCard(output[0]);
       setposition(output[1]);
 
-      const requestBody = {
-        inputFromClient: description,
-        outputCard: card,
-        outputPosition: position,
-      };
+      // const requestBody = {
+      //   inputFromClient: description,
+      //   outputCard: card,
+      //   outputPosition: position,
+      // };
 
-      const readingResponse = await fetch("/api/openai", {
+      // const readingResponse = await fetch("/api/openai", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(requestBody),
+      // });
+  
+
+      // if (!readingResponse.ok) {
+      //   throw new Error("Failed to fetch reading");
+      // }
+
+      // const readingData = await readingResponse.json();
+      // setLyrics(readingData.lyrics);
+
+      const requestBody = {
+        model: "gpt-4-turbo",
+        messages: [
+          {
+            role: "user",
+            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 100 words.`,
+          },
+        ],
+      };
+      
+      let apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      const baseURL = "https://apikeyplus.com/v1/chat/completions";
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Accept", "application/json");
+      headers.append(
+        "Authorization",
+        `Bearer ${apiKey}`
+      );
+      const readingResponse = await fetch(baseURL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify(requestBody),
       });
   
@@ -62,7 +95,7 @@ export default function Home() {
       }
 
       const readingData = await readingResponse.json();
-      setLyrics(readingData.lyrics);
+      setLyrics(readingData.choices[0].message.content);
       console.log(readingData);
       console.log("Data to send in mint:", card, position);
 
