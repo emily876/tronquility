@@ -23,15 +23,35 @@ export default function Home() {
 
     try {
 
-        const sign = await signMessage("Hello From Tronquility");
+        // const sign = await signMessage("Hello From Tronquility");
       
-        let abi = {"entrys":[{"outputs":[{"type":"string"}],"constant":true,"name":"MAJOR_ARCANA_URI","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"drawCards","stateMutability":"View","type":"Function"}]};
-      let contract = await tronWeb.contract(abi.entrys, 'TX1DiQHJJkdeiS2YKofU5fDZVwKCNCfdYt'); 
-      let result = await contract["drawCards"]().call();
+        let abi = {"entrys":[{"stateMutability":"Nonpayable","type":"Constructor"},{"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"approved","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Approval","type":"Event"},{"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"operator","type":"address"},{"name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"Event"},{"inputs":[{"name":"card_drawn","type":"string"}],"name":"CardsDrawn","type":"Event"},{"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Transfer","type":"Event"},{"outputs":[{"type":"string"}],"constant":true,"name":"MAJOR_ARCANA_URI","stateMutability":"View","type":"Function"},{"outputs":[{"type":"address"}],"constant":true,"name":"Owner","stateMutability":"View","type":"Function"},{"outputs":[{"type":"uint256"}],"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"baseURI","stateMutability":"View","type":"Function"},{"payable":true,"name":"drawCards","stateMutability":"Payable","type":"Function"},{"outputs":[{"type":"uint256"}],"constant":true,"name":"getCurrentTokenId","stateMutability":"View","type":"Function"},{"inputs":[{"name":"to","type":"address"},{"name":"tokenURI","type":"string"}],"name":"mintReading","stateMutability":"Nonpayable","type":"Function"},{"outputs":[{"type":"bool"}],"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"tokenURI","type":"string"}],"name":"mintWithTokenURI","stateMutability":"Nonpayable","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"name","stateMutability":"View","type":"Function"},{"outputs":[{"type":"address"}],"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"symbol","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenURI","stateMutability":"View","type":"Function"},{"inputs":[{"name":"_amount","type":"uint256"}],"name":"withdraw","stateMutability":"Nonpayable","type":"Function"}]};
+      let contract = await tronWeb.contract(abi.entrys, 'TKzcLB1U9bkzAQJFw7WVwqhjTd9oEPXoPz'); 
+      let result = await contract["drawCards"]().send(
+        {
+          feeLimit: 100_000_000,  // Fee limit for the transaction
+      callValue: tronWeb.toSun(10)          // Adjust call value if necessary
+        }
+      );
       
       console.log("abi result", result);
 
-      const output = result.split('; ')
+     // Wait for the transaction to be confirmed
+    const receipt = await tronWeb.trx.getTransaction(result);
+    console.log('Transaction receipt:', receipt);
+
+    // Fetch events related to this transaction
+    const events = await tronWeb.getEventByTransactionID(receipt.txID);
+    
+    const Allevents = await tronWeb.event.getEventsByContractAddress('TKzcLB1U9bkzAQJFw7WVwqhjTd9oEPXoPz', {
+      eventName: 'CardsDrawn',  // Specify the event name
+    });
+
+    console.log('Transaction events:', events, Allevents);
+
+const eventsresult = Allevents[0].result.card_drawn;
+
+      const output = eventsresult.split('; ');
 
       const card = output[0];
       const position = output[1];
@@ -111,9 +131,9 @@ export default function Home() {
 
     try {
       
-      let abi = {"entrys":[{"stateMutability":"Nonpayable","type":"Constructor"},{"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"approved","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Approval","type":"Event"},{"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"operator","type":"address"},{"name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"Event"},{"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Transfer","type":"Event"},{"outputs":[{"type":"string"}],"constant":true,"name":"MAJOR_ARCANA_URI","stateMutability":"View","type":"Function"},{"outputs":[{"type":"uint256"}],"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"baseURI","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"drawCards","stateMutability":"View","type":"Function"},{"outputs":[{"type":"uint256"}],"constant":true,"name":"getCurrentTokenId","stateMutability":"View","type":"Function"},{"inputs":[{"name":"to","type":"address"},{"name":"tokenURI","type":"string"}],"name":"mintReading","stateMutability":"Nonpayable","type":"Function"},{"outputs":[{"type":"bool"}],"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"tokenURI","type":"string"}],"name":"mintWithTokenURI","stateMutability":"Nonpayable","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"name","stateMutability":"View","type":"Function"},{"outputs":[{"type":"address"}],"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"symbol","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenURI","stateMutability":"View","type":"Function"}]}
+      let abi = {"entrys":[{"stateMutability":"Nonpayable","type":"Constructor"},{"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"approved","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Approval","type":"Event"},{"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"operator","type":"address"},{"name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"Event"},{"inputs":[{"name":"card_drawn","type":"string"}],"name":"CardsDrawn","type":"Event"},{"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Transfer","type":"Event"},{"outputs":[{"type":"string"}],"constant":true,"name":"MAJOR_ARCANA_URI","stateMutability":"View","type":"Function"},{"outputs":[{"type":"address"}],"constant":true,"name":"Owner","stateMutability":"View","type":"Function"},{"outputs":[{"type":"uint256"}],"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"baseURI","stateMutability":"View","type":"Function"},{"payable":true,"name":"drawCards","stateMutability":"Payable","type":"Function"},{"outputs":[{"type":"uint256"}],"constant":true,"name":"getCurrentTokenId","stateMutability":"View","type":"Function"},{"inputs":[{"name":"to","type":"address"},{"name":"tokenURI","type":"string"}],"name":"mintReading","stateMutability":"Nonpayable","type":"Function"},{"outputs":[{"type":"bool"}],"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"tokenURI","type":"string"}],"name":"mintWithTokenURI","stateMutability":"Nonpayable","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"name","stateMutability":"View","type":"Function"},{"outputs":[{"type":"address"}],"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"name":"symbol","stateMutability":"View","type":"Function"},{"outputs":[{"type":"string"}],"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenURI","stateMutability":"View","type":"Function"},{"inputs":[{"name":"_amount","type":"uint256"}],"name":"withdraw","stateMutability":"Nonpayable","type":"Function"}]};
 
-      let contractmint = await tronWeb.contract(abi.entrys, 'TX1DiQHJJkdeiS2YKofU5fDZVwKCNCfdYt'); 
+      let contractmint = await tronWeb.contract(abi.entrys, 'TKzcLB1U9bkzAQJFw7WVwqhjTd9oEPXoPz'); 
 
       const getCurrentTokenId = await contractmint["getCurrentTokenId"]().call();
 
