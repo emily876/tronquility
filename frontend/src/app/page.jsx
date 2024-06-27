@@ -49,7 +49,7 @@ export default function Home() {
 
     console.log('Transaction events:', events, Allevents);
 
-const eventsresult = Allevents[0].result.card_drawn;
+    const eventsresult = events[0].result.card_drawn;
 
       const output = eventsresult.split('; ');
 
@@ -151,11 +151,11 @@ const eventsresult = Allevents[0].result.card_drawn;
             },
             "description": {
                 "type": "string",
-                "description": "READING"
+                "description": lyrics
             },
             "image": {
                 "type": "string",
-                "description": "CARD_URI"
+                "description": cardimage
             }
         }
       }
