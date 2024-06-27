@@ -36,20 +36,36 @@ export default function Home() {
       
       console.log("abi result", result);
 
-     // Wait for the transaction to be confirmed
     const receipt = await tronWeb.trx.getTransaction(result);
     console.log('Transaction receipt:', receipt);
 
-    // Fetch events related to this transaction
     const events = await tronWeb.getEventByTransactionID(receipt.txID);
     
     const Allevents = await tronWeb.event.getEventsByContractAddress('TKzcLB1U9bkzAQJFw7WVwqhjTd9oEPXoPz', {
-      eventName: 'CardsDrawn',  // Specify the event name
+      eventName: 'CardsDrawn',
     });
 
-    console.log('Transaction events:', events, Allevents);
+    //  --------------------------- using trongrid ----------------------------------------------------------------------
 
-    const eventsresult = events[0].result.card_drawn;
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+      },
+    };
+
+    const response = await fetch(`https://nile.trongrid.io/v1/transactions/${result}/events`, options);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+    
+    const data = await response.json();
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    console.log('Transaction events:', events, Allevents, data);
+
+    const eventsresult = data.data[0].result.card_drawn;
 
       const output = eventsresult.split('; ');
 
