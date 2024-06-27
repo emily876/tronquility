@@ -176,108 +176,120 @@ export default function Home() {
 
   return (
     <main
-      className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-10"
+    className={`flex h-screen flex-col items-center justify-between ${lyrics && ques ? 'p-40' : 'p-60'}`}
+    style={{
+      backgroundImage: (lyrics && ques) 
+      ? "url(/profilebg.png)"
+      : (address)
+      ? "url(/afterlogin.png)"
+      : "url(/beforelogin.png)",
+      backgroundPosition: "center",
+      position: "relative",
+      zIndex: 0, 
+    }}
+  >
+    <div
+      className="z-10 lg:max-w-7xl w-full justify-between font-mono text-sm lg:flex md:flex"
       style={{
-        backgroundImage: "url(/tarot_design_dark.png)", // Path to your background image
-        backgroundSize: "cover", // Adjust as needed
-        backgroundPosition: "center", // Adjust as needed
+        position: "absolute", // Makes the div overlay the background
+        top: 30, // Adjust as needed
       }}
     >
-      <div className="z-10 lg:max-w-6xl w-full justify-between font-mono text-sm lg:flex md:flex">
-        <p
-          className="text-white text-xl pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl p-4"
-          style={{
-            backgroundColor: "#1F2544",
-            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
-          }}
-        >
-          Tronquility
-        </p>
-        <div
-        >
-          <Navbar />
-        </div>
+      <p
+        className="text-white text-2xl backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl"
+        style={{fontFamily: 'fantasy'}}
+      >
+        {/* Tronquility */}
+      </p>
+      <div
+      >
+        <Navbar />
       </div>
+        </div>
 
       <div className="lg:flex md:flex gap-10">
         <div>
-          {!ques && (
+          {!connected && (
             <button
               onClick={() => {
                 setques(true);
               }}
-              className="bg-white rounded-lg py-2 px-8 text-black mt-40 font-bold"
+              className={`rounded-full py-2 ml-3 uppercase`} style={{fontFamily: 'fantasy', color:'#BBBB9B', marginTop:'300px'}}
             >
-              Ask question
+              Start Now
             </button>
           )}
 
-          {ques && connected && (
-            <div
-              className="px-10 py-10 bgcolor rounded-2xl mt-10 max-w-xl"
-              style={{
-                border: "1px solid #0162FF",
-                boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
-              }}
-            >
-              {!lyrics && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Write your question here"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="p-2 rounded-lg w-full focus:outline-none text-black"
-                  />
-                  <button
-                    onClick={handleDrawCardAndFetchreading}
-                    className="mt-20 bg-black rounded-lg py-2 px-8 text-white"
-                  >
-                    Get my reading
-                  </button>
+          {!lyrics && connected && (
+           <div className="mt-20 flex flex-col items-center">
+           <input
+             type="text"
+             placeholder="Write your question here"
+             value={description}
+             onChange={(e) => setDescription(e.target.value)}
+             className="py-3 px-4 rounded-full w-full focus:outline-none text-white mt-48 placeholder-white"
+             style={{ width: '100%', minWidth: '700px', backgroundColor:'#A89495'}} 
+           />
+           
+             <button
+             onClick={handleDrawCardAndFetchreading}
+             className="bg-white rounded-full py-3 px-20 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#DACFE6'}}
+           >
+             Ask
+           </button>
+     
+         </div>
+)}
 
-                </>
-              )}
-              <div>
-                {lyrics && (
-                  <div>
-                    <div className="flex gap-4 pb-8">
-                      <button
-                        onClick={() => {
-                          setques(true);
-                          setDrawnCard(null);
-                          setLyrics("");
-                        }}
-                        className="bg-black rounded-lg py-2 px-8 text-yellow-200"
-                      >
-                        Start Again
-                      </button>
+   {connected && lyrics && (
+     
+     <div
+       className="px-10 py-10 rounded-2xl max-w-xl"
+       style={{
+         boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+         backgroundColor: "rgba(255, 255, 255, 0.7)"
+       }}
+     >
+       <div>
+           <div>
+             <div className="flex gap-4 pb-8">
+               <button
+                 onClick={() => {
+                   setques(true);
+                   setDrawnCard(null);
+                   setLyrics("");
+                 }}
+                 className="rounded-full py-2 px-8 text-black font-semibold"
+                 style={{backgroundColor: "#E8C6AA"}}
+               >
+                 Start Again
+               </button>
 
-                      <button
-                        onClick={mintreading}
-                        className="bg-yellow-100 rounded-lg py-2 px-6 text-black font-semibold"
-                      >
-                        Mint reading
-                      </button>
+                   <button
+                 onClick={mintreading}
+                 className="rounded-full py-2 px-6 text-black font-semibold"
+                 style={{backgroundColor: "#E8C6AA"}}
+               >
+                 Mint reading
+               </button>
 
-                    </div>
-                    <h2 className="font-bold mb-2 text-white">
-                      Your Tarot Reading:
-                    </h2>
-                    <p className="text-white">{lyrics}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+             </div>
+             <h2 className="font-bold mb-2 text-black">
+               Your Tarot Reading:
+             </h2>
+             <p className="text-black">{lyrics}</p>
+           </div>
+       </div>
+     </div>
+   )}
+ </div>
 
-        {drawnCard && lyrics ? (
+ {drawnCard && lyrics && (
           <div>
-            <h2 className="mt-10 mb-4 ml-20 text-white">{drawnCard}</h2>
+            <h2 className="mb-4 ml-20 text-white">{drawnCard}</h2>
             {position === "upright" ? (
               <img
-                src={`${"https://nftstorage.link/ipfs"}/${
+                src={`https://nftstorage.link/ipfs/${
                   cardimage.split("ipfs://")[1]
                 }`}
                 width="350"
@@ -285,7 +297,7 @@ export default function Home() {
               />
             ) : (
               <img
-                src={`${"https://nftstorage.link/ipfs"}/${
+                src={`https://nftstorage.link/ipfs/${
                   cardimage.split("ipfs://")[1]
                 }`}
                 width="350"
@@ -294,93 +306,86 @@ export default function Home() {
               />
             )}
           </div>
-        ) : (
-          <div className="rounded-lg mt-10">
-            <img src="/tarot_card.png" 
-                width="350"
-                height="350"/>
-          </div>
         )}
       </div>
 
       {ques && !connected && (
         <div
-          style={{ backgroundColor: "#222944E5" }}
-          className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
-          id="popupmodal"
-        >
-          <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
-            <div className="relative rounded-lg shadow bg-black text-white">
-              <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
-                <button
-                  onClick={() => setques(false)}
-                  type="button"
-                  className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+        className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
+        id="popupmodal"
+      >
+        <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
+          <div className="relative rounded-3xl shadow bg-black text-white">
+            <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
+              <button
+                onClick={() => setques(false)}
+                type="button"
+                className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
                 >
-                  <svg
-                    className="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
-
-              <div className="p-4 space-y-4">
-                <p className="text-2xl text-center font-bold" style={{color:'#FFB000'}}>
-                Please connect your Tron Wallet
-                </p>
-              </div>
-              <div className="flex items-center p-4 rounded-b pb-20 pt-10 justify-center">
-                  <Navbar />
-              </div>
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <p className="text-2xl text-center font-bold" style={{color:'#FFB000'}}>
+              Please connect your Wallet
+              </p>
+            </div>
+            <div className="flex items-center p-4 rounded-b pb-20 pt-10 justify-center">
+                <Navbar />
             </div>
           </div>
         </div>
-      )}
+      </div>
+    )}
 
       {mintdone && (
         <div
-          style={{ backgroundColor: "#222944E5" }}
-          className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
-          id="popupmodal"
-        >
-          <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
-            <div className="relative rounded-lg shadow bg-black text-white">
-              <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
-                <button
-                  onClick={() => setmintdone(false)}
-                  type="button"
-                  className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+        className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
+        id="popupmodal"
+      >
+        <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
+          <div className="relative rounded-3xl shadow bg-black text-white">
+            <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
+              <button
+                onClick={() => setmintdone(false)}
+                type="button"
+                className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
                 >
-                  <svg
-                    className="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+            </div>
 
               <div className="p-4 space-y-4 pb-20">
                 <p className="text-3xl text-center font-bold text-green-500">
