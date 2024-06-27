@@ -288,13 +288,13 @@ export default function Home() {
                  Start Again
                </button>
 
-                   <button
+              {/* <button
                  onClick={mintreading}
                  className="rounded-full py-2 px-6 text-black font-semibold"
                  style={{backgroundColor: "#E8C6AA"}}
                >
                  Mint reading
-               </button>
+               </button> */}
 
              </div>
              <h2 className="font-bold mb-2 text-black">
