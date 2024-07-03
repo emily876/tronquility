@@ -113,7 +113,7 @@ export default function Home() {
       };
       
       let apiKey = process.env.NEXT_PUBLIC_API_KEY;
-      const baseURL = "https://apikeyplus.com/v1/chat/completions";
+      const baseURL = "https://api.openai.com/v1/chat/completions";
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
       headers.append("Accept", "application/json");
